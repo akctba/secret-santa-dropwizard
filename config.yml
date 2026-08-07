@@ -1,0 +1,13 @@
+server:
+  applicationConnectors:
+    - type: http
+      port: 8080
+  adminConnectors:
+    - type: http
+      port: 8081
+
+auth:
+  issuer: secret-santa-api
+  secret: change-this-development-secret-to-a-strong-value
+  accessTokenMinutes: 60
+  refreshTokenDays: 30

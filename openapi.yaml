@@ -1,0 +1,440 @@
+openapi: 3.1.0
+info:
+  title: Secret Santa API
+  version: 1.0.0
+  description: |
+    Versioned API for Secret Santa group management.
+    All endpoints are currently available under the /v1 prefix.
+  license:
+    name: MIT
+    identifier: MIT
+servers:
+  - url: https://api.secret-santa.dev
+    description: Production API endpoint
+security:
+  - bearerAuth: []
+tags:
+  - name: Users
+    description: User registration, authentication, and profile retrieval.
+  - name: Groups
+    description: Secret Santa group management and draw operations.
+paths:
+  /v1/user:
+    post:
+      tags: [Users]
+      summary: Create user
+      operationId: createUser
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+            examples:
+              basic:
+                value:
+                  user_name: Alice
+                  email: alice@example.com
+                  password: secret123
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /v1/user/signin:
+    post:
+      tags: [Users]
+      summary: Sign in
+      operationId: signin
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SigninRequest'
+            examples:
+              basic:
+                value:
+                  email: alice@example.com
+                  password: secret123
+      responses:
+        '200':
+          description: Access and refresh tokens
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SigninResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /v1/user/refresh:
+    post:
+      tags: [Users]
+      summary: Refresh access token
+      operationId: refreshToken
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshTokenRequest'
+            examples:
+              basic:
+                value:
+                  refresh_token: <refresh-token>
+      responses:
+        '200':
+          description: Access token refreshed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefreshTokenResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /v1/user/{id}:
+    get:
+      tags: [Users]
+      summary: Get user by ID
+      operationId: getUser
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /v1/group:
+    post:
+      tags: [Groups]
+      summary: Create group
+      operationId: createGroup
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGroupRequest'
+            examples:
+              basic:
+                value:
+                  name: Xmas 2026
+                  date_created: '2026-12-01T00:00:00Z'
+                  date_draw: '2026-12-10T00:00:00Z'
+                  creator_user_id: 1
+      responses:
+        '201':
+          description: Group created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /v1/group/{id}:
+    get:
+      tags: [Groups]
+      summary: Get group by ID
+      operationId: getGroup
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Group found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /v1/group/{id}/participant:
+    post:
+      tags: [Groups]
+      summary: Add participant to group
+      operationId: addParticipant
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParticipantRequest'
+            examples:
+              basic:
+                value:
+                  group_id: grp_123
+                  user_id: 2
+      responses:
+        '201':
+          description: Participant added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParticipantRequest'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /v1/group/{id}/draw:
+    post:
+      tags: [Groups]
+      summary: Run Secret Santa draw
+      operationId: runDraw
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Draw completed
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /v1/group/{id}/friend:
+    get:
+      tags: [Groups]
+      summary: Get authenticated user's secret friend for a group
+      operationId: getSecretFriend
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: Assigned secret friend
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          $ref: '#/components/responses/InternalError'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    BadRequest:
+      description: Invalid request
+      content:
+        text/plain:
+          schema:
+            type: string
+          examples:
+            default:
+              value: Invalid request body
+    Unauthorized:
+      description: Missing or invalid token
+      content:
+        text/plain:
+          schema:
+            type: string
+          examples:
+            default:
+              value: Invalid token
+    Forbidden:
+      description: Authenticated user is not allowed to access this resource
+      content:
+        text/plain:
+          schema:
+            type: string
+          examples:
+            default:
+              value: User is not a participant of this group
+    Conflict:
+      description: Resource state conflict
+      content:
+        text/plain:
+          schema:
+            type: string
+          examples:
+            default:
+              value: Secret friend has not been drawn yet
+    InternalError:
+      description: Unexpected server-side failure
+      content:
+        text/plain:
+          schema:
+            type: string
+          examples:
+            default:
+              value: Failed to connect to database
+  schemas:
+    CreateUserRequest:
+      type: object
+      required: [user_name, email, password]
+      additionalProperties: false
+      properties:
+        user_name:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 1
+    SigninRequest:
+      type: object
+      required: [email, password]
+      additionalProperties: false
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 1
+    RefreshTokenRequest:
+      type: object
+      required: [refresh_token]
+      additionalProperties: false
+      properties:
+        refresh_token:
+          type: string
+          minLength: 1
+    SigninResponse:
+      type: object
+      required: [access_token, refresh_token]
+      properties:
+        access_token:
+          type: string
+        refresh_token:
+          type: string
+    RefreshTokenResponse:
+      type: object
+      required: [access_token]
+      properties:
+        access_token:
+          type: string
+    CreateGroupRequest:
+      type: object
+      required: [name, date_created, date_draw, creator_user_id]
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+        date_created:
+          type: string
+          format: date-time
+        date_draw:
+          type: string
+          format: date-time
+        creator_user_id:
+          type: integer
+          minimum: 1
+    Group:
+      type: object
+      required: [group_id, name, date_created, date_draw, creator_user_id]
+      properties:
+        group_id:
+          type: string
+        name:
+          type: string
+        date_created:
+          type: string
+          format: date-time
+        date_draw:
+          type: string
+          format: date-time
+        creator_user_id:
+          type: integer
+    ParticipantRequest:
+      type: object
+      required: [group_id, user_id]
+      additionalProperties: false
+      properties:
+        group_id:
+          type: string
+        user_id:
+          type: integer
+          minimum: 1
+    User:
+      type: object
+      required: [user_id, user_name, user_email, gender, date_of_birth]
+      properties:
+        user_id:
+          type: integer
+        user_name:
+          type: string
+        user_email:
+          type: string
+          format: email
+        gender:
+          type: string
+        date_of_birth:
+          type: string
+          format: date-time
