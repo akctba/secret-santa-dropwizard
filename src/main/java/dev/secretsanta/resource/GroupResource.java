@@ -2,6 +2,7 @@ package dev.secretsanta.resource;
 
 import dev.secretsanta.model.Models;
 import dev.secretsanta.repository.InMemorySecretSantaRepository;
+import java.util.List;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
@@ -28,6 +29,18 @@ public final class GroupResource {
     public Response addParticipant(@PathParam("id") String id, Models.ParticipantRequest request) {
         if (!id.equals(request.groupId())) throw new BadRequestException("Path and body group_id must match");
         return Response.status(Response.Status.CREATED).entity(repository.addParticipant(id, request.userId())).build();
+    }
+
+    @GET
+    @Path("/{id}/participants")
+    public List<Models.User> listParticipants(@PathParam("id") String id,
+                                              @Context ContainerRequestContext request) {
+        Object userId = request.getProperty("authenticatedUserId");
+        if (!(userId instanceof Long authenticatedUserId)) throw new NotAuthorizedException("Missing or invalid token");
+        if (!repository.canViewParticipants(id, authenticatedUserId)) {
+            throw new NotAuthorizedException("You are not part of this group and cannot view its participants");
+        }
+        return repository.listParticipants(id);
     }
 
     @POST

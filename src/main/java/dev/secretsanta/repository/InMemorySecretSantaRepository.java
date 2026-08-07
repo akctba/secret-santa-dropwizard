@@ -69,6 +69,16 @@ public final class InMemorySecretSantaRepository {
         return new Models.ParticipantRequest(groupId, userId);
     }
 
+    public List<Models.User> listParticipants(String groupId) {
+        var stored = group(groupId);
+        return stored.participants.stream().map(this::findUser).toList();
+    }
+
+    public boolean canViewParticipants(String groupId, long userId) {
+        var stored = group(groupId);
+        return stored.group.creatorUserId() == userId || stored.participants.contains(userId);
+    }
+
     public synchronized void draw(String groupId) {
         var stored = group(groupId);
         if (stored.participants.size() < 2) throw new IllegalArgumentException("At least two participants are required");

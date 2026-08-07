@@ -228,6 +228,33 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '500':
           $ref: '#/components/responses/InternalError'
+  /v1/group/{id}/participants:
+    get:
+      tags: [Groups]
+      summary: List group participants
+      description: Only the group owner and users who are participants in the group can access this roster.
+      operationId: listParticipants
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Group participants
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
   /v1/group/{id}/draw:
     post:
       tags: [Groups]
