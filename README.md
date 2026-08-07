@@ -10,10 +10,13 @@ Requirements: Java 17+ and Maven 3.9+.
 
 ```bash
 mvn clean package
+export SECRET_SANTA_SECRET='change-me'
 java -jar target/secret-santa-dropwizard-1.0.0-SNAPSHOT.jar server config.yml
 ```
 
 The API is available at `http://localhost:8080`; Dropwizard admin endpoints are at `http://localhost:8081`.
+
+The authentication layer uses the `SECRET_SANTA_SECRET` environment variable by default. Set it before starting the server, or override it in `config.yml` under the `auth.secret` property.
 
 Register first, sign in to obtain a bearer token, then use it for group and user endpoints:
 

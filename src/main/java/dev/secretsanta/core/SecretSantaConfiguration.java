@@ -18,7 +18,7 @@ public class SecretSantaConfiguration extends Configuration {
         @NotBlank
         private String issuer = "secret-santa-api";
         @NotBlank
-        private String secret = "change-me";
+        private String secret = System.getenv("SECRET_SANTA_SECRET");
         private long accessTokenMinutes = 60;
         private long refreshTokenDays = 30;
 
