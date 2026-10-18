@@ -12,7 +12,7 @@
     <properties>
         <maven.compiler.release>25</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <dropwizard.version>4.0.12</dropwizard.version>
+        <dropwizard.version>5.0.2</dropwizard.version>
         <jjwt.version>0.12.6</jjwt.version>
         <junit.version>5.11.0</junit.version>
     </properties>
