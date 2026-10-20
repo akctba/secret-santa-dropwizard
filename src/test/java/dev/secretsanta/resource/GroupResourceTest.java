@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import dev.secretsanta.TestFixtures;
 import dev.secretsanta.model.Models;
-import dev.secretsanta.repository.InMemorySecretSantaRepository;
+import dev.secretsanta.repository.SqliteSecretSantaRepository;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotAuthorizedException;
 import jakarta.ws.rs.container.ContainerRequestContext;
@@ -18,7 +18,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class GroupResourceTest {
-    private InMemorySecretSantaRepository repository;
+    private SqliteSecretSantaRepository repository;
     private GroupResource resource;
     private Models.User creator;
     private Models.User participant;
@@ -27,7 +27,7 @@ class GroupResourceTest {
 
     @BeforeEach
     void setUp() {
-        repository = new InMemorySecretSantaRepository();
+        repository = new SqliteSecretSantaRepository(":memory:");
         resource = new GroupResource(repository);
         creator = createUser("Alice", "alice@example.com");
         participant = createUser("Bob", "bob@example.com");

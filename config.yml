@@ -11,3 +11,6 @@ auth:
   secret: change-this-development-secret-to-a-strong-value
   accessTokenMinutes: 60
   refreshTokenDays: 30
+
+database:
+  path: secret-santa.db

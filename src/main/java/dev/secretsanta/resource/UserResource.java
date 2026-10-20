@@ -2,17 +2,17 @@ package dev.secretsanta.resource;
 
 import dev.secretsanta.auth.AuthService;
 import dev.secretsanta.model.Models;
-import dev.secretsanta.repository.InMemorySecretSantaRepository;
+import dev.secretsanta.repository.SqliteSecretSantaRepository;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 
 @Path("/v1/user")
 @Produces(MediaType.APPLICATION_JSON)
 public final class UserResource {
-    private final InMemorySecretSantaRepository repository;
+    private final SqliteSecretSantaRepository repository;
     private final AuthService auth;
 
-    public UserResource(InMemorySecretSantaRepository repository, AuthService auth) {
+    public UserResource(SqliteSecretSantaRepository repository, AuthService auth) {
         this.repository = repository; this.auth = auth;
     }
 

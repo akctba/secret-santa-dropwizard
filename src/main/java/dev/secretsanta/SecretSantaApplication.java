@@ -4,7 +4,7 @@ import dev.secretsanta.auth.AuthFilter;
 import dev.secretsanta.auth.AuthService;
 import dev.secretsanta.core.ApiExceptionMapper;
 import dev.secretsanta.core.SecretSantaConfiguration;
-import dev.secretsanta.repository.InMemorySecretSantaRepository;
+import dev.secretsanta.repository.SqliteSecretSantaRepository;
 import dev.secretsanta.resource.GroupResource;
 import dev.secretsanta.resource.UserResource;
 import io.dropwizard.core.Application;
@@ -19,7 +19,10 @@ public final class SecretSantaApplication extends Application<SecretSantaConfigu
 
     @Override
     public void run(SecretSantaConfiguration configuration, Environment environment) {
-        var repository = new InMemorySecretSantaRepository();
+        var repository = new SqliteSecretSantaRepository(configuration.getDatabase().getPath());
+        environment.lifecycle().manage(new io.dropwizard.lifecycle.Managed() {
+            @Override public void stop() { repository.close(); }
+        });
         var authService = new AuthService(configuration.getAuth());
 
         environment.jersey().register(new UserResource(repository, authService));

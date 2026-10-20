@@ -10,6 +10,24 @@ public class SecretSantaConfiguration extends Configuration {
     @JsonProperty("auth")
     private AuthConfiguration auth = new AuthConfiguration();
 
+    @Valid
+    @JsonProperty("database")
+    private DatabaseConfiguration database = new DatabaseConfiguration();
+
+    public DatabaseConfiguration getDatabase() {
+        return database;
+    }
+
+    public static class DatabaseConfiguration {
+        @NotBlank
+        private String path = "secret-santa.db";
+
+        public String getPath() { return path; }
+
+        @JsonProperty
+        public void setPath(String path) { this.path = path; }
+    }
+
     public AuthConfiguration getAuth() {
         return auth;
     }

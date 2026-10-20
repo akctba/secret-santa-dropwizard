@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import dev.secretsanta.auth.AuthService;
 import dev.secretsanta.model.Models;
-import dev.secretsanta.repository.InMemorySecretSantaRepository;
+import dev.secretsanta.repository.SqliteSecretSantaRepository;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotAuthorizedException;
 import jakarta.ws.rs.core.Response;
@@ -15,13 +15,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class UserResourceTest {
-    private InMemorySecretSantaRepository repository;
+    private SqliteSecretSantaRepository repository;
     private AuthService authService;
     private UserResource resource;
 
     @BeforeEach
     void setUp() {
-        repository = new InMemorySecretSantaRepository();
+        repository = new SqliteSecretSantaRepository(":memory:");
         authService = new AuthService(testConfiguration());
         resource = new UserResource(repository, authService);
     }

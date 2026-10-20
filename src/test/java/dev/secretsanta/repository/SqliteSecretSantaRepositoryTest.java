@@ -14,14 +14,14 @@ import java.util.regex.Pattern;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class InMemorySecretSantaRepositoryTest {
+class SqliteSecretSantaRepositoryTest {
     private static final Pattern GROUP_ID_PATTERN = Pattern.compile("grp_[0-9a-f]{12}");
 
-    private InMemorySecretSantaRepository repository;
+    private SqliteSecretSantaRepository repository;
 
     @BeforeEach
     void setUp() {
-        repository = new InMemorySecretSantaRepository();
+        repository = new SqliteSecretSantaRepository(":memory:");
     }
 
     @Test
