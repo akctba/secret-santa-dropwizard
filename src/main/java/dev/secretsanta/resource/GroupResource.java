@@ -1,7 +1,7 @@
 package dev.secretsanta.resource;
 
 import dev.secretsanta.model.Models;
-import dev.secretsanta.repository.InMemorySecretSantaRepository;
+import dev.secretsanta.repository.SqliteSecretSantaRepository;
 import java.util.List;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.*;
@@ -10,8 +10,8 @@ import jakarta.ws.rs.core.*;
 @Path("/v1/group")
 @Produces(MediaType.APPLICATION_JSON)
 public final class GroupResource {
-    private final InMemorySecretSantaRepository repository;
-    public GroupResource(InMemorySecretSantaRepository repository) { this.repository = repository; }
+    private final SqliteSecretSantaRepository repository;
+    public GroupResource(SqliteSecretSantaRepository repository) { this.repository = repository; }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

@@ -2,7 +2,7 @@
 
 An intentionally small Java-only Dropwizard example implementing the supplied Secret Santa OpenAPI contract. It demonstrates configuration, Jersey resources, request authentication, JWT access/refresh tokens, health-ready Dropwizard wiring, and a repository boundary.
 
-The default repository is in-memory so the example runs without infrastructure. `src/main/resources/schema.sql` contains a PostgreSQL-compatible schema matching the supplied ER diagram; replace `InMemorySecretSantaRepository` with a database-backed implementation when persistence is needed.
+Data is stored in a SQLite file (`database.path` in `config.yml`, default `secret-santa.db`). The schema in `src/main/resources/schema.sql` is created automatically on startup.
 
 ## Run
 
